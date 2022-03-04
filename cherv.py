@@ -5,70 +5,96 @@ import random
 x = random.randint(0, 600)
 y = random.randint(0, 600)
 def eat():
-    global x
-    global y
-    global apple
-    global rec
-    x_zmei = (canvas.coords(rec)[2] + canvas.coords(rec)[0]) // 2
-    y_zmei = (canvas.coords(rec)[3] + canvas.coords(rec)[1]) // 2
+    global x, y, x0, y0, app, apple
 
-
-
-
-    if abs(x + 18 - x_zmei) < 35 and abs(y + 18 - y_zmei) < 35:
+    if abs(x - x0) < 35 and abs(y - y0) < 35:
+        app += 1
         x = random.randint(0, 600)
         y = random.randint(0, 600)
         canvas.delete(apple)
         apple = canvas.create_rectangle(x, y, x + 35, y + 35, fill="red")
 
 
-
 def proverka():
-    global rec
+    global rec, x0, y0
     eat()
-    if canvas.coords(rec)[2] > 600:
-        canvas.move(rec, -600, 0)
-        window.update()
-    if canvas.coords(rec)[1] < 0:
-        canvas.move(rec, 0, 600)
-        window.update()
-    if canvas.coords(rec)[3] > 600:
-        canvas.move(rec, 0, -600)
-        window.update()
-    if canvas.coords(rec)[0] < 0:
-        canvas.move(rec, 600, 0)
-        window.update()
+
+    if (y0 + 36) > 600:
+        y0 -= 600
+    if x0 < 0:
+        x0 += 600
+    if (x0 + 36) > 600:
+        x0 -= 600
+    if y0 < 0:
+        y0 += 600
+    canvas.delete(rec)
+    rec = canvas.create_rectangle(x0, y0, x0 + 36, y0 + 36, fill="blue", outline="blue")
+    window.update()
+
 
 
 
 def click_down():
+    global rec, x0, y0, count, app
     while True:
-        canvas.move(rec, 0, 3)
-        window.update()
-        time.sleep(0.01)
-        proverka()
+        if count < 12 * app:
+            cherv.append(canvas.create_rectangle(x0, y0, x0 + 36, y0 + 36, fill="blue", outline="blue"))
+            count += 1
+
+        for i in range(len(cherv)):
+            canvas.delete(cherv[i])
+            cherv[i] = canvas.create_rectangle(x0, y0, x0 + 36, y0 + 36, fill="blue", outline="blue")
+            proverka()
+            window.update()
+            time.sleep(0.01)
+            y0 += 3
 
 
 def click_up():
-    while True:
-        canvas.move(rec, 0, -3)
-        window.update()
-        time.sleep(0.01)
-        proverka()
+   global rec, x0, y0, count, app
+   while True:
+       if count < 12 * app:
+            cherv.append(canvas.create_rectangle(x0, y0, x0 + 36, y0 + 36, fill="blue", outline="blue"))
+            count += 1
+       for i in range(len(cherv)):
+           canvas.delete(cherv[i])
+           cherv[i] = canvas.create_rectangle(x0, y0, x0 + 36, y0 + 36, fill="blue", outline="blue")
+           proverka()
+           window.update()
+           time.sleep(0.01)
+           y0 -= 3
+
+
 
 def click_left():
+    global rec, x0, y0, count, app
     while True:
-        canvas.move(rec, -3, 0)
-        window.update()
-        time.sleep(0.01)
-        proverka()
+        if count < 12 * app:
+            cherv.append(canvas.create_rectangle(x0, y0, x0 + 36, y0 + 36, fill="blue", outline = "blue"))
+            count += 1
+        for i in range(len(cherv)):
+            canvas.delete(cherv[i])
+            cherv[i] = canvas.create_rectangle(x0, y0, x0 + 36, y0 + 36, fill="blue", outline = "blue")
+            proverka()
+            window.update()
+            time.sleep(0.01)
+            x0 -= 3
+
+
 
 def click_right():
+    global rec, x0, y0, count, app
     while True:
-        canvas.move(rec, 3, 0)
-        window.update()
-        time.sleep(0.01)
-        proverka()
+        if count < 12 * app:
+            cherv.append(canvas.create_rectangle(x0, y0, x0 + 36, y0 + 36, fill="blue", outline = "blue"))
+            count += 1
+        for i in range(len(cherv)):
+            canvas.delete(cherv[i])
+            cherv[i] = canvas.create_rectangle(x0, y0, x0 + 36, y0 + 36, fill="blue", outline = "blue")
+            proverka()
+            window.update()
+            time.sleep(0.01)
+            x0 += 3
 
 
 
@@ -76,9 +102,18 @@ window = tkinter.Tk()
 canvas = tkinter.Canvas(window, width= 600, height= 600)
 window.title("Червь")
 canvas.pack()
-#buttons = [btn_down, btn_up]
-apple = canvas.create_rectangle(x, y, x + 35, y + 35, fill="red")
-rec = canvas.create_rectangle(10,  10, 45, 45, fill = "blue")
+
+apple = canvas.create_rectangle(x, y, x + 35, y + 35, fill = "red")
+x0 = 10
+y0 = 10
+
+rec = canvas.create_rectangle(10,  10, 45, 45, fill = "blue", outline= "blue")
+cherv = []
+cherv.append(rec)
+count = 0
+app = 0
+
+
 
 btn_down =  tkinter.Button( text="D", padx="15", pady="10", command=click_down)
 btn_up=     tkinter.Button( text="U", padx="15", pady="10", command=click_up)
